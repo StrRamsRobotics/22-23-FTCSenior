@@ -8,5 +8,19 @@ public class OpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        // initial setup for opmode
+        telemetry.addData("Waiting for start: ", "Press start!");
+        telemetry.update();
+
+        // wait for start
+        waitForStart();
+        while (opModeIsActive())
+        {
+
+
+            telemetry.update();
+        }
+
+
     }
 }
