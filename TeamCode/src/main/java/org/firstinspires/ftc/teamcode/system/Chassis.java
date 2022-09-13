@@ -9,6 +9,8 @@ public class Chassis extends System{
     ColorSensor color1;
     DistanceSensor distance1;
     BNO055IMU imu;
+
+    float chassisWidth = 6f;
   
     public Chassis(Telemetry telemetry){
         super(telemetry);
@@ -47,8 +49,8 @@ public class Chassis extends System{
         float averageDistance = (leftDistance + rightDistance) / 2;
         
         while(averageDistance != distance){
-            float left = this.PID(leftDistance, target, 0.1, 0.1, 0.1);
-            float right = this.PID(rightDistance, target, 0.1, 0.1, 0.1);
+            float left = this.PID(leftDistance, distance, 0.1, 0.1, 0.1);
+            float right = this.PID(rightDistance, distance, 0.1, 0.1, 0.1);
             this.move(left, right);
             
             // Update
@@ -73,6 +75,19 @@ public class Chassis extends System{
     public void turn(float degree, float radius){
         float theta = degree;
         S = theta * radius;
-        
+
+        float distanceLeft = theta *(radius - this.chassisWidth);
+        float distanceRight = theta *(radius + this.chassisWidth);
+
+        float traveledLeft = 0f;
+        float traveledRight = 0f;
+        while(distanceLeft != traveledLeft) or (distanceRight != traveledRight){
+            float left = this.PID(traveledLeft, distanceLeft, 0.1, 0.1, 0.1);
+            float right = this.PID(traveledRight, distanceRight, 0.1, 0.1, 0.1);
+            move(left, right);
+
+            distanceLeft = this.checkDistance(this.motorLeft);
+            distanceRight = this.checkDistance(this.motorRight);
+        }
     }
 }
