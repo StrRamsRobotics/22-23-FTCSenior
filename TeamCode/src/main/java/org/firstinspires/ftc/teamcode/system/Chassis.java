@@ -21,9 +21,7 @@ public class Chassis extends System{
         distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         
-        motorLeft.setDirection("FORWARD");
-        motorRight.setDirection("FORWARD");
-
+        motorLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
