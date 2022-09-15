@@ -11,7 +11,7 @@ public class Chassis extends System{
     DistanceSensor distance1;
     BNO055IMU imu;
 
-    float chassisWidth = 6f;
+    float chassisWidth = 9f;
 
     float x = 0f;
     float y = 0f;
