@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.system;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import java.lang.Math;
 
 public class Chassis extends System{
 
@@ -74,7 +75,7 @@ public class Chassis extends System{
     }
     
     public void turn(float degree, float radius){
-        float theta = (degree * pi)/180;
+        float theta = (degree * Math.pi)/180;
         //S = theta * radius;
 
         float distanceLeft = theta *(radius - this.chassisWidth);
@@ -110,15 +111,15 @@ public class Chassis extends System{
         float hypo = 0f;
         if (theta != 0)
         {
-            hypo = (distanceMiddle/theta) * sin(theta/cos(theta/2));
+            hypo = (distanceMiddle/theta) * Math.sin(theta/Math.cos(theta/2));
         }
         else
         {
             hypo = distanceMiddle;
         }
         //delats
-        float deltaX = hypo * cos(initialAngle + phi);
-        float deltaY = hypo * sin(initialAngle + phi);
+        float deltaX = hypo * Math.cos(initialAngle + phi);
+        float deltaY = hypo * Math.sin(initialAngle + phi);
         float deltaAngle = theta;
         //values
         this.x += deltaX;
