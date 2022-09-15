@@ -71,8 +71,8 @@ public class Chassis extends System{
     }
     
     public void turn(float degree, float radius){
-        float theta = degree;
-        S = theta * radius;
+        float theta = (degree * pi)/180;
+        //S = theta * radius;
 
         float distanceLeft = theta *(radius - this.chassisWidth);
         float distanceRight = theta *(radius + this.chassisWidth);
