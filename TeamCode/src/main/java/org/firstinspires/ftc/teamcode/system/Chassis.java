@@ -11,6 +11,9 @@ public class Chassis extends System{
     BNO055IMU imu;
 
     float chassisWidth = 6f;
+
+    float x = 0f;
+    float y = 0f;
   
     public Chassis(Telemetry telemetry){
         super(telemetry);
@@ -87,5 +90,38 @@ public class Chassis extends System{
             distanceLeft = this.checkDistance(this.motorLeft);
             distanceRight = this.checkDistance(this.motorRight);
         }
+    }
+    void ohno(float distanceLeft, float distanceRight, float initialAngle)
+    {
+        //angle of center of rotation to new point (rad)
+        float theta = (distanceRight - distanceLeft)/this.chassisWidth;
+
+        //distance traveled by the middle point on the robot
+        float distanceMiddle = (distanceRight+distanceLeft)/2;
+        //center of rotation radius to points on the robot
+        float leftRadius = distanceLeft/theta;
+        float rightRadius = distanceRight/theta;
+        float middleRadius = leftRadius + this.chassisWidth/2;
+        float r = distanceMiddle/theta;
+
+        //angle between initial heading to destination point
+        float phi = theta/2;
+        //hypo
+        float hypo = 0f;
+        if (theta != 0)
+        {
+            hypo = (distanceMiddle/theta) * sin(theta/cos(theta/2));
+        }
+        else
+        {
+            hypo = distanceMiddle;
+        }
+        //delats
+        float deltaX = hypo * cos(initialAngle + phi);
+        float deltaY = hypo * sin(initialAngle + phi);
+        float deltaAngle = theta;
+        //values
+        this.x += deltaX;
+        this.y += deltaY;
     }
 }
