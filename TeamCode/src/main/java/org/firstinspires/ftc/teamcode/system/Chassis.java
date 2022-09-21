@@ -15,6 +15,9 @@ public class Chassis extends System{
 
     float x = 0f;
     float y = 0f;
+    
+    int leftPos;
+    int rightPos;
   
     public Chassis(Telemetry telemetry){
         super(telemetry);
@@ -25,12 +28,37 @@ public class Chassis extends System{
         distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         
+        // reset encoders to 0
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
     public void update() {
         
+        waitForStart();
+    }
+    
+    // with use of encoders
+    public void drive(int leftTarget, int rightTarget, float speed){
+        leftPos += leftTarget;
+        rightPos += rightTarget;
+        
+        leftMotor.setTargetPosition(leftPos);
+        rightMotor.setTargetPosition(rightPos);
+        
+        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        motorLeft.setPower(left);
+        motorRight.setPower(right);
+        
+        // prevent other code from running until it gets to target position
+        while(opModeIsActive() && leftMotor.isBusy() && rightMotor.isBusy()){
+            idle();
+        }
     }
     
     public void move(float left, float right){
