@@ -15,55 +15,60 @@ public class Chassis extends System{
 
     float x = 0f;
     float y = 0f;
-    
+
     int leftPos;
     int rightPos;
-  
+
+    static float prevError = 0f;
+    static float integral = 0f;
+
     public Chassis(Telemetry telemetry){
         super(telemetry);
-        
+
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
         color1  = hardwareMap.get(ColorSensor.class, "color1");
         distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        
+
         // reset encoders to 0
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
+
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
     public void update() {
-        
+
         waitForStart();
     }
-    
+
     // with use of encoders
     public void drive(int leftTarget, int rightTarget, float speed){
         leftPos += leftTarget;
         rightPos += rightTarget;
-        
+
         leftMotor.setTargetPosition(leftPos);
         rightMotor.setTargetPosition(rightPos);
-        
+
         motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
-        this.move(speed, speed)
-        
+
+        motorLeft.setPower(left);
+        motorRight.setPower(right);
+
         // prevent other code from running until it gets to target position
         while(opModeIsActive() && leftMotor.isBusy() && rightMotor.isBusy()){
             idle();
         }
     }
-    
+
     public void move(float left, float right){
-        move(speed, speed);
+        motorLeft.setPower(left);
+        motorRight.setPower(right);
     }
-    
+
     public float checkDistance(DcMotor motor){
         float value = motor.getCurrentPosition();
         return value;
@@ -73,33 +78,31 @@ public class Chassis extends System{
         // convert
         float leftDistance = this.checkDistance(this.motorLeft);
         float rightDistance = this.checkDistance(this.motorRight);
-        
+
         float averageDistance = (leftDistance + rightDistance) / 2;
-        
+
         while(averageDistance != distance){
             float left = this.PID(leftDistance, distance, 0.1, 0.1, 0.1);
             float right = this.PID(rightDistance, distance, 0.1, 0.1, 0.1);
             this.move(left, right);
-            
-            // Update
-            float leftDistance = this.checkDistance(this.motorLeft);
-            float rightDistance = this.checkDistance(this.motorRight);
 
-            float averageDistance = (leftDistance + rightDistance) / 2;
+            // Update
+            leftDistance = this.checkDistance(this.motorLeft);
+            rightDistance = this.checkDistance(this.motorRight);
+
+            averageDistance = (leftDistance + rightDistance) / 2;
         }
     }
-    
+
     public float PID(float input, float target, float Kp, float Ki, float Kd) {
-        static int prevError = 0, integral = 0;
-
         float error = (target - input);
-        float derivative = error - prevError;  // only an approximation
-        integral = 0.5 * integral + error;  // only an approximation
-        prevError = error;
+        float derivative = error - this.prevError;  // only an approximation
+        this.integral = 0.5f * this.integral + error;  // only an approximation
+        this.prevError = error;
 
-        return Kp * error + Kd * derivative + Ki * integral;
+        return Kp * error + Kd * derivative + Ki * this.integral;
     }
-    
+
     public void turn(float degree, float radius){
         float theta = (degree * Math.pi)/180;
         //S = theta * radius;
@@ -110,8 +113,8 @@ public class Chassis extends System{
         float traveledLeft = 0f;
         float traveledRight = 0f;
         while(distanceLeft != traveledLeft) or (distanceRight != traveledRight){
-            float left = this.PID(traveledLeft, distanceLeft, 0.1, 0.1, 0.1);
-            float right = this.PID(traveledRight, distanceRight, 0.1, 0.1, 0.1);
+            float left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
+            float right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
             move(left, right);
 
             distanceLeft = this.checkDistance(this.motorLeft);
