@@ -52,8 +52,7 @@ public class Chassis extends System{
         motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         
-        motorLeft.setPower(left);
-        motorRight.setPower(right);
+        this.move(speed, speed)
         
         // prevent other code from running until it gets to target position
         while(opModeIsActive() && leftMotor.isBusy() && rightMotor.isBusy()){
