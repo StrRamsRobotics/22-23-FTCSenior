@@ -61,8 +61,7 @@ public class Chassis extends System{
     }
     
     public void move(float left, float right){
-        motorLeft.setPower(left);
-        motorRight.setPower(right);
+        move(speed, speed);
     }
     
     public float checkDistance(DcMotor motor){
@@ -93,8 +92,8 @@ public class Chassis extends System{
     public float PID(float input, float target, float Kp, float Ki, float Kd) {
         static int prevError = 0, integral = 0;
 
-        double error = (target - input);
-        double derivative = error - prevError;  // only an approximation
+        float error = (target - input);
+        float derivative = error - prevError;  // only an approximation
         integral = 0.5 * integral + error;  // only an approximation
         prevError = error;
 
