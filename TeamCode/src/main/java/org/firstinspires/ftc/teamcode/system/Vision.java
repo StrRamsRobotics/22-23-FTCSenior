@@ -81,7 +81,6 @@ public class Vision extends LinearOpMode
             telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
             telemetry.update();
-
             /*
              * Hotkey to stop streaming
              */
@@ -89,7 +88,7 @@ public class Vision extends LinearOpMode
             {
                 // Stoping camera
                 phoneCam.stopStreaming();
-                // stop pileline
+                // stop pipeline
                 //phoneCam.closeCameraDevice();
             }
 
@@ -100,7 +99,6 @@ public class Vision extends LinearOpMode
             sleep(100);
         }
     }
-
     /*
      * An example image processing pipeline to be run upon receipt of each frame from the camera.
      * Note that the processFrame() method is called serially from the frame worker thread -
@@ -134,8 +132,14 @@ public class Vision extends LinearOpMode
         private volatile TYPE type = TYPE.BALL;
 
         private void inputToCb(Mat input) {
-            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cb, 2);
+            //Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
+            //Core.extractChannel(YCrCb, Cb, 2);
+
+            //testing image thresholding
+            greyscale = Imageproc.cvtColor(img, YCrCb, cv2.COLOR_BGR2GRAY);
+            Imgproc.adaptiveThresholding(greyscale, 125,
+                    Imgproc.ADAPTIVE_THRESH_MEAN_C,
+                    Imgproc.THRESH_BINARY, 11, 12);
         }
 
         @Override
@@ -174,11 +178,7 @@ public class Vision extends LinearOpMode
             BALL, CUBE
         }
             /*
-             * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
-             * will only dereference to the same image for the duration of this particular
-             * invocation of this method. That is, if for some reason you'd like to save a copy
-             * of this particular frame for later use, you will need to either clone it or copy
-             * it to another Mat.
+             * if you want to save a frame, you need to clone it to another variable
              */
     }
 }
