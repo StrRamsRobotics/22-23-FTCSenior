@@ -118,7 +118,8 @@ public class Vision extends LinearOpMode
      */
     public static class SamplePipeline extends OpenCvPipeline
     {
-        private static final Scalar BLUE = new Scalar(0, 0, 255);
+        private static final Scalar RED = new Scalar(255, 0, 0);
+        private static final Scalar GREEN = new Scalar(0, 255, 0);
 
         private static final int THRESHOLD = 107;
 
@@ -150,12 +151,12 @@ public class Vision extends LinearOpMode
 
             average = (int) Core.mean(region1_Cb).val[0];
 
-            Imgproc.rectangle(input, topLeft, bottomRight, BLUE, 2);
-
             if (average > THRESHOLD) {
                 type = TYPE.BALL;
+                Imgproc.circle(input, topLeft, 55, RED, 2);
             } else {
                 type = TYPE.CUBE;
+                Imgproc.rectangle(input, topLeft, bottomRight, GREEN, 2);
             }
 
             return input;
