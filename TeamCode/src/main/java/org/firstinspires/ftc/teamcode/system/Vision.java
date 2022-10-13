@@ -119,36 +119,15 @@ public class Vision extends LinearOpMode
     {
         private static final Scalar RED = new Scalar(255, 0, 0);
         private static final Scalar GREEN = new Scalar(0, 255, 0);
+        private static final Scalar BLUE = new Scalar(0, 0, 255);
 
         private static final int THRESHOLD = 107;
 
         Point topLeft = new Point(50, 50);
         Point bottomRight = new Point(100, 100);
 
-        Mat region1_Cb;
-        Mat YCrCb = new Mat();
-        Mat Cb = new Mat();
-
         private volatile int average;
         private volatile TYPE type = TYPE.BALL;
-
-        private void inputToCb(Mat input) {
-            //Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            //Core.extractChannel(YCrCb, Cb, 2);
-
-            //testing image thresholding
-//            greyscale = Imgproc.cvtColor(img, YCrCb, Imgproc.COLOR_BGR2GRAY);
-//            Imgproc.adaptiveThresholding(greyscale, 125,
-//                    Imgproc.ADAPTIVE_THRESH_MEAN_C,
-//                    Imgproc.THRESH_BINARY, 11, 12);
-        }
-
-        @Override
-        public void init(Mat input) {
-            inputToCb(input);
-
-            region1_Cb = Cb.submat(new Rect(topLeft, bottomRight));
-        }
 
         Mat blurMat = new Mat();
         @Override
@@ -163,18 +142,6 @@ public class Vision extends LinearOpMode
             Imgproc.morphologyEx(blurMat, blurMat, Imgproc.MORPH_CLOSE, kernel);
 
             return input;
-        }
-
-        public TYPE getType() {
-            return type;
-        }
-
-        public int getAverage() {
-            return average;
-        }
-
-        public enum TYPE {
-            BALL, CUBE
         }
         /*
          * if you want to save a frame, you need to clone it to another variable
