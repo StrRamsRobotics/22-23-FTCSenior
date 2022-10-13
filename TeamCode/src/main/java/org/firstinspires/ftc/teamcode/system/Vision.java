@@ -136,7 +136,7 @@ public class Vision extends LinearOpMode
             //Core.extractChannel(YCrCb, Cb, 2);
 
             //testing image thresholding
-            greyscale = Imageproc.cvtColor(img, YCrCb, cv2.COLOR_BGR2GRAY);
+            greyscale = Imgproc.cvtColor(img, YCrCb, Imgproc.COLOR_BGR2GRAY);
             Imgproc.adaptiveThresholding(greyscale, 125,
                     Imgproc.ADAPTIVE_THRESH_MEAN_C,
                     Imgproc.THRESH_BINARY, 11, 12);
@@ -149,19 +149,17 @@ public class Vision extends LinearOpMode
             region1_Cb = Cb.submat(new Rect(topLeft, bottomRight));
         }
 
+        private Mat blurMat = new Mat();
         @Override
         public Mat processFrame(Mat input) {
-            inputToCb(input);
+            //blur
+            Imgproc.Blur(input, blurMat, new Size(5, 5));
+            //blur sub portion
+            blurMat = blurMat.submap(new Rect(point topLeft, point, bottomRight));
 
-            average = (int) Core.mean(region1_Cb).val[0];
-
-            if (average > THRESHOLD) {
-                type = TYPE.BALL;
-                Imgproc.circle(input, topLeft, 55, RED, 2);
-            } else {
-                type = TYPE.CUBE;
-                Imgproc.rectangle(input, topLeft, bottomRight, GREEN, 2);
-            }
+            //morphing morbing
+            Mat kernal = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+            Imgproc.morphologyEx(blurMat, blurMat, Imgproc.MORPH_CLOSE, kernel);
 
             return input;
         }
