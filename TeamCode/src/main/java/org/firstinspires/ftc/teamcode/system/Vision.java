@@ -8,6 +8,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -136,10 +137,10 @@ public class Vision extends LinearOpMode
             //Core.extractChannel(YCrCb, Cb, 2);
 
             //testing image thresholding
-            greyscale = Imgproc.cvtColor(img, YCrCb, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.adaptiveThresholding(greyscale, 125,
-                    Imgproc.ADAPTIVE_THRESH_MEAN_C,
-                    Imgproc.THRESH_BINARY, 11, 12);
+//            greyscale = Imgproc.cvtColor(img, YCrCb, Imgproc.COLOR_BGR2GRAY);
+//            Imgproc.adaptiveThresholding(greyscale, 125,
+//                    Imgproc.ADAPTIVE_THRESH_MEAN_C,
+//                    Imgproc.THRESH_BINARY, 11, 12);
         }
 
         @Override
@@ -149,16 +150,16 @@ public class Vision extends LinearOpMode
             region1_Cb = Cb.submat(new Rect(topLeft, bottomRight));
         }
 
-        private Mat blurMat = new Mat();
+        Mat blurMat = new Mat();
         @Override
         public Mat processFrame(Mat input) {
             //blur
-            Imgproc.Blur(input, blurMat, new Size(5, 5));
+            Imgproc.blur(input, blurMat, new Size(5, 5));
             //blur sub portion
-            blurMat = blurMat.submap(new Rect(point topLeft, point, bottomRight));
+            blurMat = blurMat.submat(new Rect(topLeft, bottomRight));
 
             //morphing morbing
-            Mat kernal = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
             Imgproc.morphologyEx(blurMat, blurMat, Imgproc.MORPH_CLOSE, kernel);
 
             return input;
