@@ -176,8 +176,8 @@ public class Vision extends LinearOpMode
         public enum TYPE {
             BALL, CUBE
         }
-            /*
-             * if you want to save a frame, you need to clone it to another variable
-             */
+        /*
+         * if you want to save a frame, you need to clone it to another variable
+         */
     }
 }
