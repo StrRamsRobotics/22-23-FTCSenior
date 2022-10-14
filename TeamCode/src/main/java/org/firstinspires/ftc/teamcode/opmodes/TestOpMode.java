@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="Main Loop!")
-public class OpMode extends LinearOpMode {
+public class TestOpMode extends LinearOpMode {
 
     public DcMotor left_motor, right_motor, geartest, arm;
     
@@ -21,6 +21,8 @@ public class OpMode extends LinearOpMode {
         right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -37,8 +39,18 @@ public class OpMode extends LinearOpMode {
             double power, turn_power;
             if (Math.abs(gamepad1.left_stick_y)<=0.1) power = 0;
             else power = gamepad1.left_stick_y;
-            if (Math.abs(gamepad1.right_stick_x)<=0.1) turn_power = 0;
-            else turn_power = gamepad1.right_stick_x;
+            if (Math.abs(gamepad1.left_stick_x)<=0.1) turn_power = 0;
+            else turn_power = gamepad1.left_stick_x;
+
+            if (gamepad1.dpad_up) {
+                arm.setTargetPosition(75);
+                arm.setPower(0.5);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (gamepad1.dpad_down) {
+                arm.setTargetPosition(0);
+                arm.setPower(0.5);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
 
             left_motor.setPower(power+turn_power);
             right_motor.setPower(power-turn_power);
